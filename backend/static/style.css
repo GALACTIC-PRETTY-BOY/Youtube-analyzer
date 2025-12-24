@@ -1,74 +1,54 @@
 body {
-    margin: 0;
-    background: #050505;
-    font-family: 'Segoe UI', sans-serif;
-    color: #eee;
-    overflow-x: hidden;
+  background: #0b0b0f;
+  color: #e0e0e0;
+  font-family: 'Segoe UI', sans-serif;
+  text-align: center;
+  overflow-x: hidden;
 }
 
 .overlay {
-    position: fixed;
-    inset: 0;
-    background: radial-gradient(circle at top, #111, #000);
-    z-index: -1;
-}
-
-.container {
-    max-width: 900px;
-    margin: auto;
-    padding: 20px;
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at top, #1a1a2e, #000);
+  z-index: -2;
 }
 
 input, button {
-    padding: 10px;
-    background: #111;
-    color: white;
-    border: 1px solid #555;
-    margin-right: 5px;
+  padding: 10px;
+  margin: 5px;
+  background: #1e1e2f;
+  color: white;
+  border: 1px solid #444;
 }
 
-#comments p {
-    margin: 5px 0;
-    animation: fadeIn 0.5s ease-in;
+#comments {
+  max-height: 300px;
+  overflow-y: auto;
+  text-align: left;
+  margin: 20px;
 }
 
-.good { color: #7CFFB2; }
-.bad { color: #ff7c7c; }
-.neutral { color: #ffd966; }
+.good { color: #5cff8d; }
+.bad { color: #ff5c5c; }
+.neutral { color: #ffe066; }
 
-#graphs {
-    margin-top: 30px;
-}
-
-canvas {
-    max-width: 100%;
-    height: 300px !important;
-    margin-top: 20px;
-}
-
-/* 🐱 Walking Cats */
-.cats {
-    position: fixed;
-    bottom: 0;
-    left: -200px;
-    width: 200px;
-    height: 120px;
-    background: url("https://media.tenor.com/owx0Wz8K3HkAAAAC/anime-cat-walk.gif") no-repeat center/contain;
-    animation: walk 25s linear infinite;
-    z-index: 0;
-    pointer-events: none;
-}
-
-.hidden {
-    display: none;
+/* 🐱 CATS */
+.cat {
+  position: fixed;
+  bottom: 0;
+  left: -200px;
+  width: var(--size);
+  height: var(--size);
+  background: url("https://raw.githubusercontent.com/ashleydw/animated-gifs/main/cat-walk.gif")
+    no-repeat center / contain;
+  animation: walk linear infinite;
+  animation-duration: var(--speed);
+  animation-delay: var(--delay);
+  z-index: 999;
+  pointer-events: none;
 }
 
 @keyframes walk {
-    from { left: -200px; }
-    to { left: 110%; }
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(5px); }
-    to { opacity: 1; transform: translateY(0); }
+  from { left: -200px; }
+  to { left: 110%; }
 }
