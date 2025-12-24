@@ -1,35 +1,32 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>YouTube Sentiment Observatory</title>
-
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="UTF-8" />
+  <title>YT Sentiment Analyzer</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
+  <div class="overlay"></div>
 
-<!-- Animated Cats -->
-<div id="cats" class="cats"></div>
+  <h1>🖤 YouTube Comment Sentiment 🖤</h1>
 
-<div class="overlay"></div>
+  <input id="url" placeholder="Paste YouTube URL">
+  <button onclick="start()">Start</button>
+  <button onclick="stop()">Stop</button>
+  <button onclick="toggleCats()">Toggle Cats 🐾</button>
 
-<div class="container">
-    <h1>🖤 YouTube Sentiment Observatory</h1>
+  <p id="summary"></p>
 
-    <input id="videoId" placeholder="Paste YouTube URL or ID">
-    <button onclick="start()">Start</button>
-    <button onclick="toggleCats()">🐱 Toggle Cats</button>
+  <div id="comments"></div>
 
-    <p id="summary"></p>
+  <canvas id="lineChart"></canvas>
+  <canvas id="pieChart"></canvas>
 
-    <div id="comments"></div>
+  <!-- CAT CONTAINER -->
+  <div id="cat-field"></div>
 
-    <div id="graphs">
-        <canvas id="lineChart"></canvas>
-        <canvas id="pieChart"></canvas>
-    </div>
-</div>
-
-<script src="{{ url_for('static', filename='script.js') }}"></script>
+  <script src="script.js"></script>
 </body>
 </html>
