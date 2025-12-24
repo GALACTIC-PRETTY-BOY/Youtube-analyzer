@@ -1,3 +1,133 @@
+/* -------- GLOBAL -------- */
 body {
-  font-family: Arial;
+  margin: 0;
+  background: radial-gradient(circle at top, #1a1a1d, #0b0b0d);
+  color: #e6e6e6;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 20px;
+}
+
+/* -------- HEADINGS -------- */
+h1 {
+  text-align: center;
+  font-weight: 300;
+  letter-spacing: 1px;
+  color: #cfcfcf;
+  margin-bottom: 25px;
+}
+
+/* -------- CONTROLS -------- */
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+}
+
+input {
+  background: #111;
+  border: 1px solid #333;
+  color: #eee;
+  padding: 10px;
+  width: 260px;
+  border-radius: 6px;
+}
+
+input:focus {
+  outline: none;
+  border-color: #7a0000;
+}
+
+/* -------- BUTTONS -------- */
+.btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.btn.start {
+  background: #0f5132;
+  color: #caffdd;
+}
+
+.btn.start:hover {
+  box-shadow: 0 0 10px #0f5132;
+}
+
+.btn.stop {
+  background: #5a0000;
+  color: #ffd6d6;
+}
+
+.btn.stop:hover {
+  box-shadow: 0 0 10px #7a0000;
+}
+
+.btn.ghost {
+  background: transparent;
+  border: 1px solid #444;
+  color: #ccc;
+}
+
+.btn.ghost:hover {
+  border-color: #888;
+  color: #fff;
+}
+
+/* -------- SUMMARY -------- */
+.summary-box {
+  background: #111;
+  border-left: 4px solid #7a0000;
+  padding: 12px;
+  margin: 20px 0;
+  border-radius: 6px;
+}
+
+/* -------- CHART -------- */
+.chart-box {
+  background: #111;
+  padding: 15px;
+  border-radius: 6px;
+}
+
+/* -------- COMMENTS -------- */
+.comments-box {
+  margin-top: 20px;
+  max-height: 350px;
+  overflow-y: auto;
+  background: #0f0f12;
+  border-radius: 6px;
+  padding: 10px;
+}
+
+.comments-box p {
+  margin: 6px 0;
+  padding: 6px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+/* -------- SENTIMENT COLORS -------- */
+.good {
+  color: #7CFFB2;
+  background: rgba(0, 60, 30, 0.4);
+}
+
+.bad {
+  color: #ff7c7c;
+  background: rgba(60, 0, 0, 0.4);
+}
+
+.neutral {
+  color: #ffd966;
+  background: rgba(60, 50, 0, 0.4);
 }
