@@ -1,7 +1,6 @@
 let intervalId;
 let chart;
 
-// Initialize Chart.js
 const ctx = document.getElementById("chart").getContext("2d");
 chart = new Chart(ctx, {
   type: "bar",
@@ -14,35 +13,23 @@ chart = new Chart(ctx, {
   },
   options: {
     responsive: true,
-    animation: {
-      duration: 300
-    },
-    scales: {
-      y: {
-        beginAtZero: true
-      }
-    }
+    animation: { duration: 300 },
+    scales: { y: { beginAtZero: true } }
   }
 });
 
-// Start live-fetching
 function start() {
   const videoId = document.getElementById("videoId").value;
-  if (!videoId) {
-    alert("Enter a YouTube video ID first!");
-    return;
-  }
+  if (!videoId) { alert("Enter a YouTube video ID!"); return; }
   if (intervalId) clearInterval(intervalId);
   intervalId = setInterval(() => fetchLive(videoId), 5000);
 }
 
-// Stop live-fetching
 function stop() {
   clearInterval(intervalId);
   fetch("/stop", { method: "POST" });
 }
 
-// Fetch comments and classify
 function fetchLive(videoId) {
   fetch("/live-fetch", {
     method: "POST",
@@ -57,7 +44,6 @@ function fetchLive(videoId) {
         p.innerText = c.text;
         document.getElementById("comments").prepend(p);
       });
-
       chart.data.datasets[0].data = [
         data.counts.good,
         data.counts.neutral,
@@ -67,7 +53,6 @@ function fetchLive(videoId) {
     });
 }
 
-// Get summary
 function getSummary(mode) {
   fetch("/summary", {
     method: "POST",
