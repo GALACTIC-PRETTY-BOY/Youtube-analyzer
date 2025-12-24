@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from googleapiclient.discovery import build
 from textblob import TextBlob
 
@@ -7,12 +7,7 @@ app = Flask(__name__)
 
 # ------------------ YOUTUBE API ------------------
 API_KEY = os.environ.get("YOUTUBE_API_KEY")
-
-youtube = build(
-    "youtube",
-    "v3",
-    developerKey=API_KEY
-)
+youtube = build("youtube", "v3", developerKey=API_KEY)
 
 # ------------------ STATE ------------------
 state = {
@@ -37,8 +32,7 @@ def classify(text):
 
 @app.route("/")
 def home():
-    return "Backend is alive"
-
+    return render_template("index.html")  # Serve frontend at /
 
 @app.route("/test")
 def test():
@@ -46,7 +40,6 @@ def test():
         return "API key loaded ✅"
     else:
         return "API key NOT found ❌"
-
 
 @app.route("/live-fetch", methods=["POST"])
 def live_fetch():
@@ -86,7 +79,6 @@ def live_fetch():
         "counts": state["counts"]
     })
 
-
 @app.route("/summary", methods=["POST"])
 def summary():
     mode = request.json["mode"]  # "start" or "last"
@@ -117,12 +109,10 @@ def summary():
         }
     })
 
-
 @app.route("/stop", methods=["POST"])
 def stop():
     state["running"] = False
     return jsonify({"status": "stopped"})
-
 
 @app.route("/reset", methods=["POST"])
 def reset():
@@ -136,8 +126,7 @@ def reset():
     })
     return jsonify({"status": "reset"})
 
-
 # ------------------ RUN ------------------
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)    
+    app.run(host="0.0.0.0", port=port)
