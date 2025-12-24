@@ -2,29 +2,51 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>YT Sentiment Analyzer</title>
-  <link rel="stylesheet" href="style.css">
+  <title>YouTube Sentiment Analyzer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+  <!-- Background glow -->
   <div class="overlay"></div>
 
-  <h1>🖤 YouTube Comment Sentiment 🖤</h1>
+  <header>
+    <h1>🖤 YouTube Comment Sentiment 🖤</h1>
+    <p class="subtitle">Watch the mood of the crowd unfold</p>
+  </header>
 
-  <input id="url" placeholder="Paste YouTube URL">
-  <button onclick="start()">Start</button>
-  <button onclick="stop()">Stop</button>
-  <button onclick="toggleCats()">Toggle Cats 🐾</button>
+  <section class="controls">
+    <input id="url" type="text" placeholder="Paste YouTube video URL here">
+    <div class="buttons">
+      <button onclick="start()">Start</button>
+      <button onclick="stop()">Stop</button>
+      <button onclick="toggleCats()">Cats 🐾</button>
+    </div>
+  </section>
 
-  <p id="summary"></p>
+  <section class="summary-box">
+    <p id="summary"></p>
+  </section>
 
-  <div id="comments"></div>
+  <section class="content">
+    <div id="comments" class="comments"></div>
+  </section>
 
-  <canvas id="lineChart"></canvas>
-  <canvas id="pieChart"></canvas>
+  <section class="charts">
+    <div class="chart-box">
+      <canvas id="lineChart"></canvas>
+    </div>
+    <div class="chart-box">
+      <canvas id="pieChart"></canvas>
+    </div>
+  </section>
 
-  <!-- CAT CONTAINER -->
+  <!-- Cat playground -->
   <div id="cat-field"></div>
 
   <script src="script.js"></script>
