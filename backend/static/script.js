@@ -1,4 +1,5 @@
 let lineChart, pieChart;
+let catsVisible = true;
 
 function getVideoId(input) {
     const m = input.match(/(?:v=|\/)([a-zA-Z0-9_-]{11})/);
@@ -9,14 +10,11 @@ async function start() {
     await fetch("/reset", { method: "POST" });
 
     document.getElementById("comments").innerHTML = "";
-    document.getElementById("graphs").style.display = "none";
+    document.getElementById("summary").innerText = "";
+    destroyCharts();
 
     const videoId = getVideoId(document.getElementById("videoId").value);
     fetchOnce(videoId);
-}
-
-function stop() {
-    document.getElementById("graphs").style.display = "block";
 }
 
 function fetchOnce(videoId) {
@@ -41,7 +39,7 @@ function fetchOnce(videoId) {
             document.getElementById("comments").appendChild(p);
         });
 
-        drawCharts(data.counts);
+        setTimeout(() => drawCharts(data.counts), 100);
     });
 }
 
@@ -55,7 +53,8 @@ function drawCharts(c) {
             labels: ["Good", "Neutral", "Bad"],
             datasets: [{
                 data: [c.good, c.neutral, c.bad],
-                borderColor: "#aaa"
+                borderColor: "#aaa",
+                tension: 0.4
             }]
         }
     });
@@ -70,4 +69,14 @@ function drawCharts(c) {
             }]
         }
     });
+}
+
+function destroyCharts() {
+    if (lineChart) lineChart.destroy();
+    if (pieChart) pieChart.destroy();
+}
+
+function toggleCats() {
+    catsVisible = !catsVisible;
+    document.getElementById("cats").classList.toggle("hidden", !catsVisible);
 }
