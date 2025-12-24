@@ -1,6 +1,7 @@
 import os
 from flask import Flask, request, jsonify, render_template
 from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
 from textblob import TextBlob
 
 app = Flask(__name__)
@@ -29,10 +30,9 @@ def classify(text):
     return "neutral"
 
 # ------------------ ROUTES ------------------
-
 @app.route("/")
 def home():
-    return render_template("index.html")  # Serve frontend at /
+    return render_template("index.html")
 
 @app.route("/test")
 def test():
@@ -48,17 +48,19 @@ def live_fetch():
 
     video_id = request.json["video_id"]
 
-    req = youtube.commentThreads().list(
-        part="snippet",
-        videoId=video_id,
-        maxResults=20,
-        pageToken=state["next_page_token"],
-        textFormat="plainText"
-    )
+    try:
+        req = youtube.commentThreads().list(
+            part="snippet",
+            videoId=video_id,
+            maxResults=20,
+            pageToken=state["next_page_token"],
+            textFormat="plainText"
+        )
+        res = req.execute()
+    except HttpError as e:
+        return jsonify({"error": f"Could not fetch video: {e}"}), 400
 
-    res = req.execute()
     state["next_page_token"] = res.get("nextPageToken")
-
     new_comments = []
 
     for item in res.get("items", []):
@@ -81,7 +83,7 @@ def live_fetch():
 
 @app.route("/summary", methods=["POST"])
 def summary():
-    mode = request.json["mode"]  # "start" or "last"
+    mode = request.json["mode"]
 
     if mode == "last":
         sentiments = state["sentiments"][state["last_summary_index"]:]
@@ -102,11 +104,7 @@ def summary():
 
     return jsonify({
         "summary": text,
-        "stats": {
-            "good": good,
-            "bad": bad,
-            "neutral": neutral
-        }
+        "stats": {"good": good, "bad": bad, "neutral": neutral}
     })
 
 @app.route("/stop", methods=["POST"])
