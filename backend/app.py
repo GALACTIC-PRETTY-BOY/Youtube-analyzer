@@ -6,62 +6,56 @@ from textblob import TextBlob
 
 app = Flask(__name__)
 
-# ------------------ YOUTUBE API ------------------
 API_KEY = os.environ.get("YOUTUBE_API_KEY")
 youtube = build("youtube", "v3", developerKey=API_KEY)
 
-# ------------------ STATE ------------------
-state = {
-    "comments": [],
-    "sentiments": [],
-    "counts": {"good": 0, "bad": 0, "neutral": 0},
-    "last_summary_index": 0,
-    "next_page_token": None,
-    "running": True
-}
+state = {}
 
-# ------------------ SENTIMENT ------------------
+def reset_state():
+    state.update({
+        "comments": [],
+        "sentiments": [],
+        "counts": {"good": 0, "bad": 0, "neutral": 0},
+        "next_page_token": None
+    })
+
+reset_state()
+
 def classify(text):
     polarity = TextBlob(text).sentiment.polarity
-    if polarity > 0.1:
+    if polarity > 0.15:
         return "good"
-    elif polarity < -0.1:
+    elif polarity < -0.15:
         return "bad"
     return "neutral"
 
-# ------------------ ROUTES ------------------
 @app.route("/")
 def home():
     return render_template("index.html")
 
-@app.route("/test")
-def test():
-    if API_KEY:
-        return "API key loaded ✅"
-    else:
-        return "API key NOT found ❌"
+@app.route("/reset", methods=["POST"])
+def reset():
+    reset_state()
+    return jsonify({"status": "reset"})
 
-@app.route("/live-fetch", methods=["POST"])
-def live_fetch():
-    if not state["running"]:
-        return jsonify({"status": "stopped"})
-
+@app.route("/fetch", methods=["POST"])
+def fetch():
     video_id = request.json["video_id"]
 
     try:
         req = youtube.commentThreads().list(
             part="snippet",
             videoId=video_id,
-            maxResults=20,
+            maxResults=50,
             pageToken=state["next_page_token"],
             textFormat="plainText"
         )
         res = req.execute()
     except HttpError as e:
-        return jsonify({"error": f"Could not fetch video: {e}"}), 400
+        return jsonify({"error": "YouTube API error or quota exceeded"}), 400
 
     state["next_page_token"] = res.get("nextPageToken")
-    new_comments = []
+    new = []
 
     for item in res.get("items", []):
         text = item["snippet"]["topLevelComment"]["snippet"]["textDisplay"]
@@ -71,60 +65,30 @@ def live_fetch():
         state["sentiments"].append(sentiment)
         state["counts"][sentiment] += 1
 
-        new_comments.append({
-            "text": text,
-            "sentiment": sentiment
-        })
+        new.append({"text": text, "sentiment": sentiment})
 
     return jsonify({
-        "new_comments": new_comments,
-        "counts": state["counts"]
+        "comments": new,
+        "counts": state["counts"],
+        "summary": generate_summary()
     })
 
-@app.route("/summary", methods=["POST"])
-def summary():
-    mode = request.json["mode"]
+def generate_summary():
+    total = len(state["sentiments"])
+    if total == 0:
+        return "No comments yet."
 
-    if mode == "last":
-        sentiments = state["sentiments"][state["last_summary_index"]:]
-        state["last_summary_index"] = len(state["sentiments"])
+    g = state["counts"]["good"]
+    b = state["counts"]["bad"]
+    n = state["counts"]["neutral"]
+
+    if g > b:
+        return "Viewers are mostly enjoying the content, expressing appreciation, excitement, and positive reactions."
+    elif b > g:
+        return "Many viewers are unhappy or critical, pointing out issues, frustration, or disagreement."
     else:
-        sentiments = state["sentiments"]
+        return "The audience appears divided, with a mix of opinions and neutral observations."
 
-    good = sentiments.count("good")
-    bad = sentiments.count("bad")
-    neutral = sentiments.count("neutral")
-
-    if good > bad:
-        text = "Overall sentiment is positive."
-    elif bad > good:
-        text = "Overall sentiment is negative."
-    else:
-        text = "Overall sentiment is mixed."
-
-    return jsonify({
-        "summary": text,
-        "stats": {"good": good, "bad": bad, "neutral": neutral}
-    })
-
-@app.route("/stop", methods=["POST"])
-def stop():
-    state["running"] = False
-    return jsonify({"status": "stopped"})
-
-@app.route("/reset", methods=["POST"])
-def reset():
-    state.update({
-        "comments": [],
-        "sentiments": [],
-        "counts": {"good": 0, "bad": 0, "neutral": 0},
-        "last_summary_index": 0,
-        "next_page_token": None,
-        "running": True
-    })
-    return jsonify({"status": "reset"})
-
-# ------------------ RUN ------------------
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
