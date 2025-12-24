@@ -1,5 +1,6 @@
 let intervalId;
 let chart;
+let isLive = false;  // track if live video
 
 // Extract YouTube video ID from URL or ID
 function getVideoId(input) {
@@ -26,19 +27,33 @@ chart = new Chart(ctx, {
     }
 });
 
+// Start button clicked
 function start() {
     let videoIdInput = document.getElementById("videoId").value;
     const videoId = getVideoId(videoIdInput);
     if (!videoId) { alert("Enter a valid YouTube video ID or URL!"); return; }
+
+    // Ask user if video is live
+    isLive = confirm("Is this a live video? Press OK for live, Cancel for non-live.");
+
     if (intervalId) clearInterval(intervalId);
-    intervalId = setInterval(() => fetchLive(videoId), 5000);
+
+    if (isLive) {
+        // Poll every 5 sec for live
+        intervalId = setInterval(() => fetchLive(videoId), 5000);
+    } else {
+        // Fetch once for non-live
+        fetchLive(videoId);
+    }
 }
 
+// Stop polling
 function stop() {
     clearInterval(intervalId);
     fetch("/stop", { method: "POST" });
 }
 
+// Fetch live or static comments
 function fetchLive(videoId) {
     fetch("/live-fetch", {
         method: "POST",
@@ -53,6 +68,7 @@ function fetchLive(videoId) {
             return;
         }
 
+        // Add new comments to page
         data.new_comments.forEach(c => {
             const p = document.createElement("p");
             p.className = c.sentiment;
@@ -60,6 +76,7 @@ function fetchLive(videoId) {
             document.getElementById("comments").prepend(p);
         });
 
+        // Update chart
         chart.data.datasets[0].data = [
             data.counts.good,
             data.counts.neutral,
@@ -70,10 +87,11 @@ function fetchLive(videoId) {
     .catch(err => {
         console.error("Fetch error:", err);
         stop();
-        alert("Failed to fetch comments. Check video ID or API limits.");
+        alert("Failed to fetch comments. Check video ID or API quota.");
     });
 }
 
+// Summary buttons
 function getSummary(mode) {
     fetch("/summary", {
         method: "POST",
