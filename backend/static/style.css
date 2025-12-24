@@ -1,42 +1,148 @@
+/* RESET */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* BASE */
 body {
-  background: #0b0b0f;
-  color: #e0e0e0;
-  font-family: 'Segoe UI', sans-serif;
-  text-align: center;
+  background: #07070d;
+  color: #e6e6eb;
+  font-family: "Segoe UI", system-ui, sans-serif;
   overflow-x: hidden;
 }
 
+/* GLOW BACKGROUND */
 .overlay {
   position: fixed;
   inset: 0;
-  background: radial-gradient(circle at top, #1a1a2e, #000);
+  background:
+    radial-gradient(circle at top, #1a1a2e 0%, transparent 60%),
+    radial-gradient(circle at bottom, #0f3460 0%, transparent 55%);
   z-index: -2;
 }
 
-input, button {
-  padding: 10px;
-  margin: 5px;
-  background: #1e1e2f;
-  color: white;
-  border: 1px solid #444;
+/* HEADER */
+header {
+  text-align: center;
+  padding: 30px 20px 10px;
 }
 
-#comments {
-  max-height: 300px;
-  overflow-y: auto;
-  text-align: left;
+header h1 {
+  font-size: 2rem;
+  letter-spacing: 1px;
+}
+
+.subtitle {
+  opacity: 0.7;
+  margin-top: 5px;
+}
+
+/* CONTROLS */
+.controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
   margin: 20px;
 }
 
-.good { color: #5cff8d; }
-.bad { color: #ff5c5c; }
-.neutral { color: #ffe066; }
+.controls input {
+  width: 90%;
+  max-width: 500px;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #333;
+  background: #0f0f1a;
+  color: #fff;
+}
+
+.buttons {
+  display: flex;
+  gap: 10px;
+}
+
+button {
+  padding: 10px 16px;
+  background: #1c1c2e;
+  color: #fff;
+  border: 1px solid #333;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  background: #29295a;
+}
+
+/* SUMMARY */
+.summary-box {
+  max-width: 700px;
+  margin: 10px auto;
+  text-align: center;
+  padding: 10px 20px;
+  font-style: italic;
+  opacity: 0.9;
+}
+
+/* CONTENT */
+.content {
+  display: flex;
+  justify-content: center;
+}
+
+.comments {
+  width: 95%;
+  max-width: 800px;
+  max-height: 280px;
+  overflow-y: auto;
+  padding: 15px;
+  border-radius: 8px;
+  background: rgba(20, 20, 35, 0.6);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+}
+
+.comments p {
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+
+/* SENTIMENT COLORS */
+.good {
+  color: #5cff9d;
+}
+
+.bad {
+  color: #ff6b6b;
+}
+
+.neutral {
+  color: #ffe066;
+}
+
+/* CHARTS */
+.charts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  padding: 25px;
+}
+
+.chart-box {
+  width: 320px;
+  background: rgba(15, 15, 30, 0.7);
+  border-radius: 10px;
+  padding: 15px;
+}
 
 /* 🐱 CATS */
 .cat {
   position: fixed;
-  bottom: 0;
   left: -200px;
+  bottom: 0;
   width: var(--size);
   height: var(--size);
   background: url("https://raw.githubusercontent.com/ashleydw/animated-gifs/main/cat-walk.gif")
