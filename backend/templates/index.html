@@ -1,38 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <title>YouTube Sentiment Analyzer</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>YouTube Sentiment Observatory</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
+<div class="overlay"></div>
+
 <div class="container">
+    <h1>🖤 YouTube Sentiment Observatory</h1>
 
-  <h1>🕯 YouTube Sentiment Observatory</h1>
+    <input id="videoId" placeholder="Paste YouTube URL or ID">
+    <button onclick="start()">Start</button>
+    <button onclick="stop()">Stop</button>
 
-  <div class="controls">
-    <input id="videoId" placeholder="Enter YouTube Video ID">
-    <button class="btn start" onclick="start()">Start</button>
-    <button class="btn stop" onclick="stop()">Stop</button>
-  </div>
+    <p id="summary"></p>
 
-  <div class="controls">
-    <button class="btn ghost" onclick="getSummary('start')">Summary (From Start)</button>
-    <button class="btn ghost" onclick="getSummary('last')">Summary (From Last)</button>
-  </div>
+    <div id="comments"></div>
 
-  <div class="summary-box">
-    <h3 id="summary">Waiting for sentiment…</h3>
-  </div>
-
-  <div class="chart-box">
-    <canvas id="chart"></canvas>
-  </div>
-
-  <div id="comments" class="comments-box"></div>
-
+    <div id="graphs">
+        <canvas id="lineChart"></canvas>
+        <canvas id="pieChart"></canvas>
+    </div>
 </div>
 
 <script src="{{ url_for('static', filename='script.js') }}"></script>
