@@ -2,10 +2,14 @@
 <html>
 <head>
     <title>YouTube Sentiment Observatory</title>
+
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+
+<!-- Animated Cats -->
+<div id="cats" class="cats"></div>
 
 <div class="overlay"></div>
 
@@ -14,7 +18,7 @@
 
     <input id="videoId" placeholder="Paste YouTube URL or ID">
     <button onclick="start()">Start</button>
-    <button onclick="stop()">Stop</button>
+    <button onclick="toggleCats()">🐱 Toggle Cats</button>
 
     <p id="summary"></p>
 
