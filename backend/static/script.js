@@ -1,105 +1,73 @@
-let intervalId;
-let chart;
-let isLive = false;  // track if live video
+let lineChart, pieChart;
 
-// Extract YouTube video ID from URL or ID
 function getVideoId(input) {
-    const regex = /(?:v=|\/)([a-zA-Z0-9_-]{11})/;
-    const match = input.match(regex);
-    return match ? match[1] : input;
+    const m = input.match(/(?:v=|\/)([a-zA-Z0-9_-]{11})/);
+    return m ? m[1] : input;
 }
 
-// Initialize Chart.js
-const ctx = document.getElementById("chart").getContext("2d");
-chart = new Chart(ctx, {
-    type: "bar",
-    data: {
-        labels: ["Good", "Neutral", "Bad"],
-        datasets: [{
-            data: [0, 0, 0],
-            backgroundColor: ["#7CFFB2", "#ffd966", "#ff7c7c"]
-        }]
-    },
-    options: {
-        responsive: true,
-        animation: { duration: 300 },
-        scales: { y: { beginAtZero: true } }
-    }
-});
+async function start() {
+    await fetch("/reset", { method: "POST" });
 
-// Start button clicked
-function start() {
-    let videoIdInput = document.getElementById("videoId").value;
-    const videoId = getVideoId(videoIdInput);
-    if (!videoId) { alert("Enter a valid YouTube video ID or URL!"); return; }
+    document.getElementById("comments").innerHTML = "";
+    document.getElementById("graphs").style.display = "none";
 
-    // Ask user if video is live
-    isLive = confirm("Is this a live video? Press OK for live, Cancel for non-live.");
-
-    if (intervalId) clearInterval(intervalId);
-
-    if (isLive) {
-        // Poll every 5 sec for live
-        intervalId = setInterval(() => fetchLive(videoId), 5000);
-    } else {
-        // Fetch once for non-live
-        fetchLive(videoId);
-    }
+    const videoId = getVideoId(document.getElementById("videoId").value);
+    fetchOnce(videoId);
 }
 
-// Stop polling
 function stop() {
-    clearInterval(intervalId);
-    fetch("/stop", { method: "POST" });
+    document.getElementById("graphs").style.display = "block";
 }
 
-// Fetch live or static comments
-function fetchLive(videoId) {
-    fetch("/live-fetch", {
+function fetchOnce(videoId) {
+    fetch("/fetch", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ video_id: videoId })
     })
-    .then(res => res.json())
+    .then(r => r.json())
     .then(data => {
         if (data.error) {
             alert(data.error);
-            stop();
             return;
         }
 
-        // Add new comments to page
-        data.new_comments.forEach(c => {
+        document.getElementById("summary").innerText = data.summary;
+
+        data.comments.forEach(c => {
             const p = document.createElement("p");
             p.className = c.sentiment;
             p.innerText = c.text;
-            document.getElementById("comments").prepend(p);
+            document.getElementById("comments").appendChild(p);
         });
 
-        // Update chart
-        chart.data.datasets[0].data = [
-            data.counts.good,
-            data.counts.neutral,
-            data.counts.bad
-        ];
-        chart.update();
-    })
-    .catch(err => {
-        console.error("Fetch error:", err);
-        stop();
-        alert("Failed to fetch comments. Check video ID or API quota.");
+        drawCharts(data.counts);
     });
 }
 
-// Summary buttons
-function getSummary(mode) {
-    fetch("/summary", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mode })
-    })
-    .then(res => res.json())
-    .then(data => {
-        document.getElementById("summary").innerText = data.summary;
+function drawCharts(c) {
+    const ctx1 = document.getElementById("lineChart");
+    const ctx2 = document.getElementById("pieChart");
+
+    lineChart = new Chart(ctx1, {
+        type: "line",
+        data: {
+            labels: ["Good", "Neutral", "Bad"],
+            datasets: [{
+                data: [c.good, c.neutral, c.bad],
+                borderColor: "#aaa"
+            }]
+        }
+    });
+
+    pieChart = new Chart(ctx2, {
+        type: "pie",
+        data: {
+            labels: ["Good", "Neutral", "Bad"],
+            datasets: [{
+                data: [c.good, c.neutral, c.bad],
+                backgroundColor: ["#7CFFB2", "#ffd966", "#ff7c7c"]
+            }]
+        }
     });
 }
