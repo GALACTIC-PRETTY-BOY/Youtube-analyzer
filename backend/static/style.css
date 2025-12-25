@@ -1,19 +1,25 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 body {
   background: url("https://media.tenor.com/2roX3uxz_68AAAAC/cat-anime.gif")
     center / cover fixed;
-  font-family: "Segoe UI", sans-serif;
+  font-family: "Segoe UI", system-ui, sans-serif;
   color: #eee;
 }
 
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.75);
+  background: rgba(0,0,0,0.75);
   z-index: -1;
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 1100px;
   margin: auto;
   padding: 20px;
 }
@@ -23,62 +29,77 @@ header {
   margin-bottom: 20px;
 }
 
+.subtitle {
+  opacity: 0.7;
+  font-size: 0.9rem;
+}
+
 .controls {
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
   margin-bottom: 20px;
 }
 
-input, button {
-  padding: 10px 14px;
+input {
+  width: 60%;
+  padding: 10px;
   background: #111;
-  color: white;
+  color: #eee;
   border: 1px solid #555;
-  border-radius: 4px;
 }
 
-button:hover {
-  background: #222;
+button {
+  padding: 10px 16px;
+  background: #1c1c2e;
+  color: white;
+  border: 1px solid #555;
   cursor: pointer;
 }
 
+button:hover {
+  background: #29295a;
+}
+
 .main {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
   gap: 20px;
 }
 
 /* LEFT */
 #comments {
+  width: 55%;
   max-height: 420px;
   overflow-y: auto;
-  background: rgba(15,15,25,0.8);
   padding: 15px;
+  background: rgba(0,0,0,0.6);
   border-radius: 8px;
+}
+
+#comments p {
+  margin-bottom: 6px;
+  font-size: 0.9rem;
 }
 
 /* RIGHT */
 #analysis {
-  background: rgba(15,15,25,0.8);
+  width: 45%;
   padding: 15px;
+  background: rgba(0,0,0,0.6);
   border-radius: 8px;
 }
 
 #summary {
-  font-style: italic;
   margin-bottom: 15px;
+  font-style: italic;
 }
 
-/* COMMENTS */
-#comments p {
-  margin: 6px 0;
-  font-size: 0.9rem;
-}
-
-.good { color: #7CFFB2; }
+/* SENTIMENT COLORS */
+.good { color: #7cffb2; }
 .bad { color: #ff7c7c; }
 .neutral { color: #ffd966; }
 
 /* GRAPHS */
 #graphs {
-  margin-top: 20px;
+  display: none;
 }
