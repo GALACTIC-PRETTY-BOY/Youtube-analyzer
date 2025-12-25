@@ -1,6 +1,6 @@
-let counts = { good: 0, bad: 0, neutral: 0 };
-let chartPie = null;
+          let counts = { good: 0, bad: 0, neutral: 0 };
 let chartLine = null;
+let chartPie = null;
 
 function extractVideoId(url) {
   const match = url.match(/(?:v=|\/)([0-9A-Za-z_-]{11})/);
@@ -27,7 +27,7 @@ async function analyze() {
       body: JSON.stringify({ video_id: videoId })
     });
 
-    if (!res.ok) throw new Error("API failed");
+    if (!res.ok) throw new Error("Fetch failed");
 
     const data = await res.json();
 
@@ -36,9 +36,9 @@ async function analyze() {
     renderSummary();
     renderCharts();
 
-  } catch (err) {
+  } catch {
     document.getElementById("summary").innerText =
-      "⚠️ Unable to fetch comments. Check API quota or video URL.";
+      "⚠️ Unable to fetch comments. Check API quota or URL.";
   }
 }
 
@@ -53,10 +53,10 @@ function renderComments(comments) {
 }
 
 function renderSummary() {
-  let text = "The discussion feels mixed overall.";
+  let text = "Overall reactions are mixed.";
 
   if (counts.good > counts.bad && counts.good > counts.neutral) {
-    text = "Most viewers are enjoying the video and reacting positively.";
+    text = "Most viewers are enjoying the video and responding positively.";
   } else if (counts.bad > counts.good) {
     text = "Many viewers are critical or dissatisfied with the content.";
   }
@@ -80,10 +80,7 @@ function renderCharts() {
       type: "line",
       data: {
         labels: ["Good", "Bad", "Neutral"],
-        datasets: [{
-          data,
-          borderWidth: 2
-        }]
+        datasets: [{ data, borderWidth: 2 }]
       }
     });
   }
@@ -96,9 +93,7 @@ function renderCharts() {
       type: "pie",
       data: {
         labels: ["Good", "Bad", "Neutral"],
-        datasets: [{
-          data
-        }]
+        datasets: [{ data }]
       }
     });
   }
