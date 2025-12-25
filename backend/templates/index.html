@@ -1,27 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>YouTube Sentiment Analyzer</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
-  <!-- Background glow -->
   <div class="overlay"></div>
 
   <header>
     <h1>🖤 YouTube Comment Sentiment 🖤</h1>
-    <p class="subtitle">Watch the mood of the crowd unfold</p>
+    <p class="subtitle">Dark analytics with cute chaos</p>
   </header>
 
   <section class="controls">
-    <input id="url" type="text" placeholder="Paste YouTube video URL here">
+    <input id="url" placeholder="Paste YouTube video URL">
     <div class="buttons">
       <button onclick="start()">Start</button>
       <button onclick="stop()">Stop</button>
@@ -33,22 +30,17 @@
     <p id="summary"></p>
   </section>
 
-  <section class="content">
+  <div class="content">
     <div id="comments" class="comments"></div>
-  </section>
+  </div>
 
   <section class="charts">
-    <div class="chart-box">
-      <canvas id="lineChart"></canvas>
-    </div>
-    <div class="chart-box">
-      <canvas id="pieChart"></canvas>
-    </div>
+    <div class="chart-box"><canvas id="lineChart"></canvas></div>
+    <div class="chart-box"><canvas id="pieChart"></canvas></div>
   </section>
 
-  <!-- Cat playground -->
   <div id="cat-field"></div>
 
-  <script src="script.js"></script>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
