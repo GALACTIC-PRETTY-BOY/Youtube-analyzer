@@ -3,7 +3,7 @@ from flask import Flask, request, jsonify, render_template
 from googleapiclient.discovery import build
 from textblob import TextBlob
 
-app = Flask(__name__, template_folder="../templates", static_folder="../static")
+app = Flask(__name__)
 
 API_KEY = os.environ.get("YOUTUBE_API_KEY")
 youtube = build("youtube", "v3", developerKey=API_KEY)
@@ -30,7 +30,7 @@ def analyze():
     req = youtube.commentThreads().list(
         part="snippet",
         videoId=video_id,
-        maxResults=100,   # ONE HEAVY FETCH
+        maxResults=100,   # one heavy fetch
         textFormat="plainText"
     )
 
