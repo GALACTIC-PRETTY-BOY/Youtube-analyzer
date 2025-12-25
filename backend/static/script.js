@@ -18,19 +18,28 @@ async function analyze() {
 
   document.getElementById("comments").innerHTML = "";
   document.getElementById("summary").innerText = "Analyzing comments…";
+  document.getElementById("graphs").style.display = "none";
 
-  const res = await fetch("/analyze", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ video_id: videoId })
-  });
+  try {
+    const res = await fetch("/analyze", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ video_id: videoId })
+    });
 
-  const data = await res.json();
+    if (!res.ok) throw new Error("API failed");
 
-  counts = data.counts;
-  renderComments(data.comments);
-  renderSummary();
-  renderCharts();
+    const data = await res.json();
+
+    counts = data.counts;
+    renderComments(data.comments);
+    renderSummary();
+    renderCharts();
+
+  } catch (err) {
+    document.getElementById("summary").innerText =
+      "⚠️ Unable to fetch comments. Check API quota or video URL.";
+  }
 }
 
 function renderComments(comments) {
@@ -44,12 +53,13 @@ function renderComments(comments) {
 }
 
 function renderSummary() {
-  let text = "The discussion feels mixed.";
+  let text = "The discussion feels mixed overall.";
 
-  if (counts.good > counts.bad && counts.good > counts.neutral)
+  if (counts.good > counts.bad && counts.good > counts.neutral) {
     text = "Most viewers are enjoying the video and reacting positively.";
-  else if (counts.bad > counts.good)
-    text = "Many viewers are critical or dissatisfied.";
+  } else if (counts.bad > counts.good) {
+    text = "Many viewers are critical or dissatisfied with the content.";
+  }
 
   document.getElementById("summary").innerText = text;
 }
@@ -59,22 +69,36 @@ function renderCharts() {
 
   const data = [counts.good, counts.bad, counts.neutral];
 
-  if (!chartLine) {
-    chartLine = new Chart(lineChart, {
+  const lineCtx = document.getElementById("lineChart").getContext("2d");
+  const pieCtx = document.getElementById("pieChart").getContext("2d");
+
+  if (chartLine) {
+    chartLine.data.datasets[0].data = data;
+    chartLine.update();
+  } else {
+    chartLine = new Chart(lineCtx, {
       type: "line",
       data: {
         labels: ["Good", "Bad", "Neutral"],
-        datasets: [{ data, borderWidth: 2 }]
+        datasets: [{
+          data,
+          borderWidth: 2
+        }]
       }
     });
   }
 
-  if (!chartPie) {
-    chartPie = new Chart(pieChart, {
+  if (chartPie) {
+    chartPie.data.datasets[0].data = data;
+    chartPie.update();
+  } else {
+    chartPie = new Chart(pieCtx, {
       type: "pie",
       data: {
         labels: ["Good", "Bad", "Neutral"],
-        datasets: [{ data }]
+        datasets: [{
+          data
+        }]
       }
     });
   }
