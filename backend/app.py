@@ -3,15 +3,10 @@ from flask import Flask, request, jsonify, render_template
 from googleapiclient.discovery import build
 from textblob import TextBlob
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="templates", static_folder="static")
 
 API_KEY = os.environ.get("YOUTUBE_API_KEY")
 youtube = build("youtube", "v3", developerKey=API_KEY)
-
-state = {
-    "counts": {"good": 0, "bad": 0, "neutral": 0},
-    "next_page_token": None
-}
 
 def classify(text):
     polarity = TextBlob(text).sentiment.polarity
@@ -25,43 +20,37 @@ def classify(text):
 def home():
     return render_template("index.html")
 
-@app.route("/live-fetch", methods=["POST"])
-def live_fetch():
-    video_id = request.json["video_id"]
+@app.route("/analyze", methods=["POST"])
+def analyze():
+    video_id = request.json.get("video_id")
 
-    req = youtube.commentThreads().list(
+    comments = []
+    counts = {"good": 0, "bad": 0, "neutral": 0}
+
+    request_api = youtube.commentThreads().list(
         part="snippet",
         videoId=video_id,
-        maxResults=20,
-        pageToken=state["next_page_token"],
+        maxResults=100,     # ONE BIG FETCH
         textFormat="plainText"
     )
 
-    res = req.execute()
-    state["next_page_token"] = res.get("nextPageToken")
+    response = request_api.execute()
 
-    new_comments = []
-
-    for item in res.get("items", []):
+    for item in response.get("items", []):
         text = item["snippet"]["topLevelComment"]["snippet"]["textDisplay"]
         sentiment = classify(text)
-        state["counts"][sentiment] += 1
 
-        new_comments.append({
+        comments.append({
             "text": text,
             "sentiment": sentiment
         })
 
-    return jsonify({
-        "new_comments": new_comments,
-        "counts": state["counts"]
-    })
+        counts[sentiment] += 1
 
-@app.route("/stop", methods=["POST"])
-def stop():
-    state["next_page_token"] = None
-    state["counts"] = {"good": 0, "bad": 0, "neutral": 0}
-    return jsonify({"status": "stopped"})
+    return jsonify({
+        "comments": comments,
+        "counts": counts
+    })
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
