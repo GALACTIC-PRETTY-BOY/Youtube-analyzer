@@ -1,107 +1,84 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 body {
-  background: #07070d;
-  color: #e6e6eb;
-  font-family: Segoe UI, sans-serif;
-  overflow-x: hidden;
+  background: url("https://media.tenor.com/2roX3uxz_68AAAAC/cat-anime.gif")
+    center / cover fixed;
+  font-family: "Segoe UI", sans-serif;
+  color: #eee;
 }
 
 .overlay {
   position: fixed;
   inset: 0;
-  background: radial-gradient(circle at top, #1a1a2e, transparent 60%);
+  background: rgba(0, 0, 0, 0.75);
   z-index: -1;
+}
+
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
 }
 
 header {
   text-align: center;
-  padding: 25px;
+  margin-bottom: 20px;
 }
 
 .controls {
   text-align: center;
+  margin-bottom: 20px;
 }
 
-input {
-  width: 90%;
-  max-width: 480px;
-  padding: 12px;
-  background: #0f0f1a;
-  color: white;
-  border: 1px solid #333;
-  border-radius: 6px;
-}
-
-.buttons {
-  margin-top: 10px;
-}
-
-button {
-  margin: 5px;
+input, button {
   padding: 10px 14px;
-  background: #1c1c2e;
+  background: #111;
   color: white;
-  border: 1px solid #333;
-  border-radius: 6px;
+  border: 1px solid #555;
+  border-radius: 4px;
+}
+
+button:hover {
+  background: #222;
   cursor: pointer;
 }
 
-.summary-box {
-  text-align: center;
-  margin: 15px;
-  font-style: italic;
+.main {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
 }
 
-.comments {
-  max-width: 800px;
-  margin: auto;
-  max-height: 280px;
+/* LEFT */
+#comments {
+  max-height: 420px;
   overflow-y: auto;
+  background: rgba(15,15,25,0.8);
   padding: 15px;
-  background: rgba(20,20,35,.6);
   border-radius: 8px;
 }
 
-.good { color: #5cff9d; }
-.bad { color: #ff6b6b; }
-.neutral { color: #ffe066; }
-
-.charts {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  padding: 25px;
-  flex-wrap: wrap;
-}
-
-.chart-box {
-  width: 320px;
-  background: rgba(15,15,30,.7);
+/* RIGHT */
+#analysis {
+  background: rgba(15,15,25,0.8);
   padding: 15px;
-  border-radius: 10px;
+  border-radius: 8px;
 }
 
-/* 🐱 CATS */
-.cat {
-  position: fixed;
-  bottom: 0;
-  left: -200px;
-  width: var(--size);
-  height: var(--size);
-  background: url("https://raw.githubusercontent.com/ashleydw/animated-gifs/main/cat-walk.gif")
-    no-repeat center/contain;
-  animation: walk linear infinite;
-  animation-duration: var(--speed);
-  animation-delay: var(--delay);
-  z-index: 999;
+#summary {
+  font-style: italic;
+  margin-bottom: 15px;
 }
 
-@keyframes walk {
-  from { left: -200px; }
-  to { left: 110%; }
+/* COMMENTS */
+#comments p {
+  margin: 6px 0;
+  font-size: 0.9rem;
+}
+
+.good { color: #7CFFB2; }
+.bad { color: #ff7c7c; }
+.neutral { color: #ffd966; }
+
+/* GRAPHS */
+#graphs {
+  margin-top: 20px;
 }
